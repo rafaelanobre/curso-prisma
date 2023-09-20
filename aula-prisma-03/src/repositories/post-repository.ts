@@ -1,5 +1,4 @@
 import { Post } from "@prisma/client";
-import db from "../database/database";
 import prisma from "../database/database";
 
 const TABLE_NAME = "posts";
