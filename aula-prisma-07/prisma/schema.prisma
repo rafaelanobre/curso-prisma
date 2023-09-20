@@ -1,0 +1,72 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int      @id @default(autoincrement())
+  email    String   @unique
+  password String
+
+    //relação 1:1
+  profile  Profile?
+
+  @@map("users")
+}
+
+model Profile {
+  id        Int    @id @default(autoincrement())
+  firstName String
+  lastName  String
+
+  //relação 1:1
+  userId   Int       @unique
+  user     User      @relation(fields: [userId], references: [id])
+
+    //relação 1:n
+  adresses Address[]
+
+  @@map("profiles")
+}
+
+model Address {
+  id      Int    @id @default(autoincrement())
+  street  String
+  number  String
+  zipCode String @unique
+
+  //relação 1:n
+  profileId Int     @unique
+  profile   Profile @relation(fields: [profileId], references: [id])
+
+  @@map("addresses")
+}
+
+model ProfileService {
+  id          Int    @id @default(autoincrement())
+  servicecode String @unique
+  profile_id  String
+  service_id  String
+
+  //relação n:m
+  services Service[]
+
+  @@map("profileServices")
+}
+
+model Service {
+  id          Int    @id @default(autoincrement())
+  description String
+
+  //relação n:m
+  profileServices ProfileService[]
+
+  @@map("services")
+}
